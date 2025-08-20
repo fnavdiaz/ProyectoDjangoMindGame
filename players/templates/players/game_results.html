@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados del Juego</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .player-symbol {
+            font-size: 3em;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(233, 69, 96, 0.2);
+            border-radius: 50%;
+            border: 2px solid #e94560;
+        }
+        
+        .player-details h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #e94560;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+            margin: 0;
+        }
+        
+        .player-details p {
+            color: #ccc;
+            margin: 5px 0 0 0;
+            font-size: 1.1em;
+        }
+        
+        .karma-score {
+            background: #e94560;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+        }
+        
+        .results-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
+            text-align: center;
+            margin-bottom: 20px;
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(233, 69, 96, 0.2); }
+            100% { box-shadow: 0 0 40px rgba(233, 69, 96, 0.5); }
+        }
+        
+        .game-over-title {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.8);
+            color: #e94560;
+        }
+        
+        .result-for-player {
+            font-size: 2em;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        
+        .you-won {
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid #4ade80;
+            color: #4ade80;
+        }
+        
+        .you-lost {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .game-tie {
+            background: rgba(251, 191, 36, 0.2);
+            border: 2px solid #fbbf24;
+            color: #fbbf24;
+        }
+        
+        .winner-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .loser-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+            animation: shake 1s infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+        
+        .tie-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .game-summary {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin: 20px 0;
+            color: #ccc;
+        }
+        
+        .your-stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .stats-title {
+            font-size: 1.8em;
+            color: #e94560;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 1.2em;
+        }
+        
+        .stat-label {
+            color: #ccc;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .player-info {
+                flex-direction: column;
+            }
+            
+            .game-over-title {
+                font-size: 2em;
+            }
+            
+            .result-for-player {
+                font-size: 1.5em;
+            }
+            
+            .winner-emoji, .loser-emoji, .tie-emoji {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="player-info">
+            <div class="player-symbol">
+                {% if player.is_dead %}
+                    💀
+                {% elif is_winner %}
+                    👑
+                {% else %}
+                    {% if player.chosen_symbol %}{{ player.chosen_symbol }}{% else %}{{ player.suit_emoji }}{% endif %}
+                {% endif %}
+            </div>
+            <div class="player-details">
+                <h1>{{ player.display_name }}</h1>
+                <p>
+                    {% if player.is_dead %}
+                        Jugador Eliminado
+                    {% elif is_winner %}
+                        🏆 GANADOR 🏆
+                    {% else %}
+                        {% if is_tie %}Jugador en Empate{% else %}Jugador{% endif %}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <a href="{% url 'players:logout' %}" class="logout-btn">🚪 SALIR</a>
+    </div>
+    
+    <div class="results-container">
+        <div class="game-over-title">🏁 JUEGO FINALIZADO</div>
+        
+        {% if is_winner %}
+            <!-- El jugador ganó -->
+            <div class="result-for-player you-won">
+                <div class="winner-emoji">🎉</div>
+                <div>¡FELICIDADES! HAS GANADO</div>
+            </div>
+            <div class="game-summary">{{ winner_reason }}</div>
+        {% elif is_tie %}
+            <!-- Empate -->
+            <div class="result-for-player game-tie">
+                <div class="tie-emoji">🤝</div>
+                <div>EMPATE</div>
+            </div>
+            <div class="game-summary">{{ winner_reason }}</div>
+        {% elif winner %}
+            <!-- Otro jugador ganó -->
+            <div class="result-for-player you-lost">
+                <div class="loser-emoji">😔</div>
+                <div>{{ winner.display_name }} HA GANADO</div>
+            </div>
+            <div class="game-summary">{{ winner_reason }}</div>
+        {% else %}
+            <!-- Nadie ganó (todos muertos) -->
+            <div class="result-for-player you-lost">
+                <div class="loser-emoji">💀</div>
+                <div>NADIE HA GANADO</div>
+            </div>
+            <div class="game-summary">{{ winner_reason }}</div>
+        {% endif %}
+        
+        <!-- Estadísticas personales -->
+        <div class="your-stats">
+            <div class="stats-title">📊 Tus Estadísticas</div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Estado Final:</span>
+                <span class="stat-value">
+                    {% if player.is_dead %}
+                        💀 Eliminado
+                    {% else %}
+                        ✅ Superviviente
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Interacciones Totales:</span>
+                <span class="stat-value">{{ player.lies_told|add:player.truths_told }}</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Mentiras Contadas:</span>
+                <span class="stat-value">{{ player.lies_told }}</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Verdades Contadas:</span>
+                <span class="stat-value">{{ player.truths_told }}</span>
+            </div>
+            
+            {% if player.is_dead %}
+            <div class="stat-item">
+                <span class="stat-label">Causa de Muerte:</span>
+                <span class="stat-value">{{ player.death_reason }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script>
+        // Auto-refresh cada 3 segundos para detectar nuevo juego
+        setInterval(function() {
+            fetch('/players/ajax/check-new-game/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.new_game_available) {
+                        // Hay un nuevo juego, redirigir al dashboard
+                        window.location.href = '/players/dashboard/';
+                    }
+                })
+                .catch(error => {
+                    // Si hay error, intentar redirigir al dashboard de todos modos
+                    console.log('Verificando nuevo juego...');
+                });
+        }, 3000);
+        
+        // Botón manual para volver al dashboard
+        function returnToDashboard() {
+            window.location.href = '/players/dashboard/';
+        }
+        
+        // Agregar botón de retorno manual después de 10 segundos
+        setTimeout(function() {
+            const container = document.querySelector('.results-container');
+            const button = document.createElement('button');
+            button.textContent = '🏠 VOLVER AL JUEGO';
+            button.className = 'btn';
+            button.onclick = returnToDashboard;
+            button.style.marginTop = '20px';
+            container.appendChild(button);
+        }, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Jugador</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .player-symbol {
+            font-size: 3em;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(233, 69, 96, 0.2);
+            border-radius: 50%;
+            border: 2px solid #e94560;
+        }
+        
+        .player-details h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #e94560;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+            margin: 0;
+        }
+        
+        .player-details p {
+            color: #ccc;
+            margin: 5px 0 0 0;
+            font-size: 1.1em;
+        }
+        
+        .karma-score {
+            background: #e94560;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+        }
+        
+        .main-content {
+            display: block;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
+        }
+        
+        .card h2 {
+            color: #e94560;
+            margin-top: 0;
+            font-size: 1.5em;
+            border-bottom: 1px solid #e94560;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        
+        .timer-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #e94560;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.8);
+        }
+        
+        .game-info {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .round-info {
+            background: rgba(233, 69, 96, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .players-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .player-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #e94560;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-item.current-player {
+            background: rgba(233, 69, 96, 0.3);
+            border-left-color: #22c55e;
+            border: 2px solid #22c55e;
+        }
+        
+        .player-item-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .player-item-symbol {
+            font-size: 1.8em;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .player-item-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .player-karma {
+            background: #e94560;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            min-width: 12px;
+            min-height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-action-btn {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 10px rgba(74, 222, 128, 0.4);
+        }
+        
+        .no-game {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        .no-players {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status-waiting {
+            background: rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+            border: 1px solid #fbbf24;
+        }
+        
+        .status-active {
+            background: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .player-info {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="player-info">
+            <div class="player-symbol" onclick="openSymbolModal()" style="cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                {% if player.chosen_symbol %}
+                    {{ player.chosen_symbol }}
+                {% else %}
+                    ?
+                {% endif %}
+            </div>
+            <div class="player-details">
+                <h1>{{ player.display_name }}</h1>
+                <p>Jugador Conectado<span class="karma-score" style="background: {% if player.karma_score <= 3 %}#22c55e{% else %}#ef4444{% endif %};">Karma: {{ player.karma_score }}</span></p>
+            </div>
+        </div>
+        <a href="{% url 'players:logout' %}" class="logout-btn">🚪 SALIR</a>
+    </div>
+    
+    <div class="main-content">
+        <div class="card" style="grid-column: 1 / -1; max-width: 100%;">
+            <h2 id="round-title">
+                {% if current_game and current_game.status == 'active' %}
+                    ♠ ♥ Ronda {{ current_game.current_round }} ♦ ♣
+                {% else %}
+                    ♠ ♥ Otros Jugadores ♦ ♣
+                {% endif %}
+            </h2>
+            <div class="players-list" id="players-list">
+                {% if online_players %}
+                    {% comment %} Primero jugadores vivos ordenados alfabéticamente {% endcomment %}
+                    {% for p in online_players %}
+                        {% if p.id != player.id and not p.is_dead %}
+                            <div class="player-item">
+                                <div class="player-item-info">
+                                    <!-- Jugador vivo -->
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        <span class="player-item-symbol">{{ p.suit_emoji }}</span>
+                                        <div>
+                                            <div class="player-item-name">{{ p.display_name }}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <button class="player-action-btn" onclick="askPlayer('{{ p.display_name }}', {{ p.id }})">💬</button>
+                                        <span class="player-guess-symbol" id="guess-{{ p.id }}" style="font-size: 1.5em; color: {% if player_communications.p.id %}#ffffff{% else %}#fbbf24{% endif %};">
+                                            {% if player_communications.p.id %}{{ player_communications.p.id }}{% else %}?{% endif %}
+                                        </span>
+                                        <div class="player-karma" style="background: {% if p.karma_score <= 3 %}#22c55e{% else %}#ef4444{% endif %}; width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; display: inline-block;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% comment %} Después jugadores muertos ordenados alfabéticamente {% endcomment %}
+                    {% for p in online_players %}
+                        {% if p.id != player.id and p.is_dead %}
+                            <div class="player-item">
+                                <div class="player-item-info">
+                                    <!-- Jugador muerto -->
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        <span class="player-item-symbol" style="opacity: 0.5;">💀</span>
+                                        <div>
+                                            <div class="player-item-name" style="opacity: 0.5; text-decoration: line-through;">{{ p.display_name }}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 1.2em; color: #666;">ELIMINADO</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="no-players">
+                        No hay otros jugadores en el juego.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para elegir símbolo -->
+    <div id="symbolModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: #1a1a2e; padding: 30px; border-radius: 15px; border: 2px solid #e94560; text-align: center; max-width: 400px;">
+            <h3 style="color: #e94560; margin-bottom: 20px;">¿Qué símbolo crees que tienes?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                <button onclick="chooseSymbol('♠')" style="font-size: 3em; background: rgba(233, 69, 96, 0.2); border: 2px solid #e94560; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♠</button>
+                <button onclick="chooseSymbol('♥')" style="font-size: 3em; background: rgba(233, 69, 96, 0.2); border: 2px solid #e94560; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♥</button>
+                <button onclick="chooseSymbol('♦')" style="font-size: 3em; background: rgba(233, 69, 96, 0.2); border: 2px solid #e94560; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♦</button>
+                <button onclick="chooseSymbol('♣')" style="font-size: 3em; background: rgba(233, 69, 96, 0.2); border: 2px solid #e94560; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♣</button>
+            </div>
+            <button onclick="closeSymbolModal()" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">Cancelar</button>
+        </div>
+    </div>
+    
+    <!-- Modal para comunicar símbolo a otro jugador -->
+    <div id="communicationModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: #1a1a2e; padding: 30px; border-radius: 15px; border: 2px solid #4ade80; text-align: center; max-width: 400px;">
+            <h3 id="communicationTitle" style="color: #4ade80; margin-bottom: 20px;">¿Qué símbolo le dices que tiene?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                <button onclick="communicateSymbol('♠')" style="font-size: 3em; background: rgba(74, 222, 128, 0.2); border: 2px solid #4ade80; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♠</button>
+                <button onclick="communicateSymbol('♥')" style="font-size: 3em; background: rgba(74, 222, 128, 0.2); border: 2px solid #4ade80; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♥</button>
+                <button onclick="communicateSymbol('♦')" style="font-size: 3em; background: rgba(74, 222, 128, 0.2); border: 2px solid #4ade80; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♦</button>
+                <button onclick="communicateSymbol('♣')" style="font-size: 3em; background: rgba(74, 222, 128, 0.2); border: 2px solid #4ade80; color: white; padding: 30px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;">♣</button>
+            </div>
+            <button onclick="closeCommunicationModal()" style="background: #666; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">Cancelar</button>
+        </div>
+    </div>
+    
+    <script>
+        let gameData = null;
+        let currentTargetPlayer = null;
+        let currentRound = null;
+        
+        // Inicialización correcta de currentRound dentro del script
+        {% if current_game and current_game.status == 'active' %}
+            currentRound = {{ current_game.current_round }};
+        {% endif %}
+        
+        // Funciones para el modal de símbolo
+        function openSymbolModal() {
+            document.getElementById('symbolModal').style.display = 'flex';
+        }
+        
+        function closeSymbolModal() {
+            document.getElementById('symbolModal').style.display = 'none';
+        }
+        
+        function askPlayer(playerName, playerId) {
+            currentTargetPlayer = { name: playerName, id: playerId };
+            document.getElementById('communicationTitle').textContent = `¿Qué te dijo ${playerName} que tienes?`;
+            document.getElementById('communicationModal').style.display = 'flex';
+        }
+        
+        function closeCommunicationModal() {
+            document.getElementById('communicationModal').style.display = 'none';
+            currentTargetPlayer = null;
+        }
+        
+        function communicateSymbol(symbol) {
+            if (!currentTargetPlayer) return;
+            
+            // Guardar el símbolo en el objeto de comunicaciones
+            playerGuesses[currentTargetPlayer.id] = symbol;
+            
+            // Actualizar el símbolo mostrado localmente
+            const guessElement = document.getElementById(`guess-${currentTargetPlayer.id}`);
+            if (guessElement) {
+                guessElement.textContent = symbol;
+                guessElement.style.color = '#ffffff'; // Cambiar color a blanco
+            }
+            
+            // Enviar la comunicación al servidor
+            fetch('{% url "players:ajax_tell_player_symbol" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `target_player_id=${currentTargetPlayer.id}&symbol=${symbol}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Comunicación registrada:', data.message);
+                } else {
+                    console.error('Error al registrar comunicación:', data.message);
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al registrar la comunicación');
+            });
+            
+            closeCommunicationModal();
+        }
+        
+        function chooseSymbol(symbol) {
+            fetch('{% url "players:ajax_choose_symbol" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: 'symbol=' + symbol
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Actualizar el símbolo mostrado directamente
+                    document.querySelector('.player-symbol').textContent = symbol;
+                    closeSymbolModal();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al enviar la selección');
+            });
+        }
+        
+        // Función para obtener datos del juego (simplificada)
+        function fetchGameData() {
+            return fetch('/api/master/api/dashboard/')
+                .then(response => response.json())
+                .then(data => {
+                    const previousGameData = gameData;
+                    gameData = data.current_game;
+                    
+                    // Actualizar título con número de ronda
+                    updateRoundTitle();
+                    
+                    // Detectar cambio de ronda y limpiar comunicaciones
+                    if (gameData && currentRound !== null && gameData.current_round !== currentRound) {
+                        // Cambió la ronda, limpiar todas las comunicaciones
+                        playerGuesses = {};
+                        console.log('🔄 Ronda cambió, limpiando comunicaciones');
+                        // Recargar página para obtener nuevos símbolos
+                        location.reload();
+                    }
+                    
+                    // Actualizar ronda actual
+                    if (gameData) {
+                        currentRound = gameData.current_round;
+                    }
+                    
+                    updatePlayersList(data.online_players);
+                    
+                    // Cargar comunicaciones guardadas después de actualizar la lista
+                    if (gameData && gameData.status === 'active') {
+                        loadSavedGuesses();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        // Función para actualizar el título con el número de ronda
+        function updateRoundTitle() {
+            const titleElement = document.getElementById('round-title');
+            if (!titleElement) return;
+            
+            if (gameData && gameData.status === 'active') {
+                titleElement.textContent = `♠ ♥ Ronda ${gameData.current_round} ♦ ♣`;
+            } else if (!gameData) {
+                // No sobrescribir el valor inicial del servidor si gameData aún no está cargado
+                return;
+            } else {
+                titleElement.textContent = '♠ ♥ Otros Jugadores ♦ ♣';
+            }
+        }
+        
+        // Función para actualizar la lista de jugadores
+        function updatePlayersList(players) {
+            const playersList = document.getElementById('players-list');
+            if (!playersList) return;
+            
+            if (players && players.length > 0) {
+                // Filtrar para no mostrar al jugador actual
+                const currentPlayerId = {{ player.id }};
+                const otherPlayers = players.filter(p => p.id != currentPlayerId);
+                
+                // Separar jugadores vivos y muertos
+                const alivePlayers = otherPlayers
+                    .filter(p => !p.is_dead)
+                    .sort((a, b) => a.display_name.localeCompare(b.display_name, 'es', { 
+                        sensitivity: 'base',
+                        ignorePunctuation: true 
+                    }));
+                
+                const deadPlayers = otherPlayers
+                    .filter(p => p.is_dead)
+                    .sort((a, b) => a.display_name.localeCompare(b.display_name, 'es', { 
+                        sensitivity: 'base',
+                        ignorePunctuation: true 
+                    }));
+                
+                if (otherPlayers.length > 0) {
+                    let playersHTML = '';
+                    
+                    // Primero los jugadores vivos
+                    playersHTML += alivePlayers.map(p => {
+                        const guessedSymbol = playerGuesses[p.id] || '?';
+                        const symbolColor = playerGuesses[p.id] ? '#ffffff' : '#fbbf24';
+                        
+                        return `
+                        <div class="player-item">
+                            <div class="player-item-info">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <span class="player-item-symbol">${p.suit_emoji || '♠'}</span>
+                                    <div>
+                                        <div class="player-item-name">${p.display_name}</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button class="player-action-btn" onclick="askPlayer('${p.display_name}', ${p.id})">💬</button>
+                                    <span class="player-guess-symbol" id="guess-${p.id}" style="font-size: 1.5em; color: ${symbolColor};">${guessedSymbol}</span>
+                                    <div class="player-karma" style="background: ${p.karma_score <= 3 ? '#22c55e' : '#ef4444'}; width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; display: inline-block;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                    
+                    // Después los jugadores muertos
+                    playersHTML += deadPlayers.map(p => {
+                        return `
+                        <div class="player-item">
+                            <div class="player-item-info">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <span class="player-item-symbol" style="opacity: 0.5;">💀</span>
+                                    <div>
+                                        <div class="player-item-name" style="opacity: 0.5; text-decoration: line-through;">${p.display_name}</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="font-size: 1.2em; color: #666;">ELIMINADO</span>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                    
+                    playersList.innerHTML = playersHTML;
+                    
+                    // Aplicar comunicaciones guardadas después de actualizar el HTML
+                    applyStoredCommunications();
+                } else {
+                    // NO borrar la lista si está vacía, mantener el HTML inicial
+                    console.log('No hay otros jugadores después del filtro, manteniendo HTML inicial');
+                }
+            } else {
+                // NO borrar la lista si no hay datos, mantener el HTML inicial
+                console.log('No hay datos de jugadores, manteniendo HTML inicial');
+            }
+        }
+        
+        // Función para aplicar comunicaciones guardadas al HTML actual
+        function applyStoredCommunications() {
+            console.log('🔧 Aplicando comunicaciones guardadas al DOM...', playerGuesses);
+            
+            // Contar cuántas comunicaciones se aplicaron exitosamente
+            let applied = 0;
+            let total = Object.keys(playerGuesses).length;
+            
+            Object.keys(playerGuesses).forEach(playerId => {
+                const guessElement = document.getElementById(`guess-${playerId}`);
+                
+                if (guessElement && playerGuesses[playerId]) {
+                    // Solo actualizar si el valor actual es diferente (evitar parpadeo)
+                    if (guessElement.textContent !== playerGuesses[playerId]) {
+                        guessElement.textContent = playerGuesses[playerId];
+                        guessElement.style.color = '#ffffff';
+                    }
+                    applied++;
+                }
+            });
+            
+            console.log(`🔧 Comunicaciones aplicadas: ${applied}/${total}`);
+        }
+        
+        // Función para cargar comunicaciones guardadas (versión independiente)
+        function loadSavedGuessesImmediate() {
+            fetch('/players/ajax/get-player-guesses/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.guesses) {
+                        // Restaurar las comunicaciones en el objeto playerGuesses
+                        playerGuesses = {};
+                        data.guesses.forEach(guess => {
+                            playerGuesses[guess.teller_id] = guess.told_symbol;
+                        });
+                        
+                        // Aplicar las comunicaciones al HTML actual
+                        applyStoredCommunications();
+                        
+                        console.log('✅ Comunicaciones cargadas inmediatamente:', playerGuesses);
+                    }
+                })
+                .catch(error => console.error('Error cargando comunicaciones:', error));
+        }
+        
+        // Función para cargar comunicaciones guardadas
+        function loadSavedGuesses() {
+            if (!gameData || gameData.status !== 'active') return;
+            
+            fetch('/players/ajax/get-player-guesses/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.guesses) {
+                        // Restaurar las comunicaciones en el objeto playerGuesses
+                        playerGuesses = {};
+                        data.guesses.forEach(guess => {
+                            playerGuesses[guess.teller_id] = guess.told_symbol;
+                        });
+                        
+                        // Aplicar las comunicaciones al HTML actual
+                        applyStoredCommunications();
+                        
+                        console.log('✅ Comunicaciones cargadas y aplicadas:', playerGuesses);
+                    }
+                })
+                .catch(error => console.error('Error cargando comunicaciones:', error));
+        }
+        
+        // Función para ordenar la lista inicial de jugadores
+        function sortInitialPlayerList() {
+            const playersList = document.getElementById('players-list');
+            if (!playersList) return;
+            
+            const playerItems = Array.from(playersList.querySelectorAll('.player-item'));
+            if (playerItems.length <= 1) return;
+            
+            // Extraer datos de jugadores y separar vivos de muertos
+            const playersData = playerItems.map(item => {
+                const nameElement = item.querySelector('.player-item-name');
+                const name = nameElement ? nameElement.textContent.trim() : '';
+                const isDead = nameElement && nameElement.style.textDecoration === 'line-through';
+                return { element: item, name: name, isDead: isDead };
+            });
+            
+            // Separar jugadores vivos y muertos
+            const alivePlayers = playersData
+                .filter(p => !p.isDead)
+                .sort((a, b) => a.name.localeCompare(b.name, 'es', { 
+                    sensitivity: 'base',
+                    ignorePunctuation: true 
+                }));
+            
+            const deadPlayers = playersData
+                .filter(p => p.isDead)
+                .sort((a, b) => a.name.localeCompare(b.name, 'es', { 
+                    sensitivity: 'base',
+                    ignorePunctuation: true 
+                }));
+            
+            // Reordenar elementos en el DOM: primero vivos, luego muertos
+            playersList.innerHTML = '';
+            alivePlayers.forEach(playerData => {
+                playersList.appendChild(playerData.element);
+            });
+            deadPlayers.forEach(playerData => {
+                playersList.appendChild(playerData.element);
+            });
+            
+            console.log('📱 Lista inicial ordenada: vivos primero, luego eliminados (ambos alfabético)');
+        }
+        
+        // Inicialización simplificada
+        {% if current_game and current_game.status == 'active' %}
+            currentRound = {{ current_game.current_round }};
+        {% endif %}
+        
+        // Cargar comunicaciones INMEDIATAMENTE al cargar la página
+        {% if current_game and current_game.status == 'active' %}
+        // Función para cargar comunicaciones de la base de datos
+        function loadCommunicationsFromDatabase() {
+            console.log('🔄 Consultando base de datos para comunicaciones...');
+            
+            fetch('/players/ajax/get-player-guesses/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('📡 Respuesta completa de la base de datos:', data);
+                    
+                    if (data.success && data.guesses) {
+                        // Limpiar comunicaciones previas
+                        playerGuesses = {};
+                        
+                        // Restaurar las comunicaciones de la base de datos
+                        data.guesses.forEach(guess => {
+                            console.log('🔍 Procesando guess:', guess);
+                            console.log('  - teller_id:', guess.teller_id);
+                            console.log('  - teller_name:', guess.teller_name);
+                            console.log('  - told_symbol:', guess.told_symbol);
+                            
+                            // Verificar que teller_id no sea undefined
+                            if (guess.teller_id && guess.teller_id !== 'undefined') {
+                                playerGuesses[guess.teller_id] = guess.told_symbol;
+                                console.log(`💬 Restaurando: ${guess.teller_name} (ID: ${guess.teller_id}) me dijo ${guess.told_symbol}`);
+                            } else {
+                                console.error('❌ teller_id es undefined o inválido para:', guess);
+                            }
+                        });
+                        
+                        console.log('✅ Comunicaciones restauradas desde BD:', playerGuesses);
+                        
+                        // Aplicar inmediatamente a los elementos del DOM
+                        applyStoredCommunications();
+                    } else {
+                        console.log('ℹ️ No hay comunicaciones guardadas en la base de datos');
+                        playerGuesses = {};
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error cargando comunicaciones:', error);
+                    playerGuesses = {};
+                });
+        }
+        
+        // Ejecutar inmediatamente al cargar la página
+        loadCommunicationsFromDatabase();
+        {% endif %}
+        
+        // Ordenar lista inicial inmediatamente
+        sortInitialPlayerList();
+        
+        // Aplicar comunicaciones guardadas al HTML inicial después de un pequeño delay
+        setTimeout(() => {
+            applyStoredCommunications();
+        }, 1000);
+        
+        // Obtener datos iniciales después de un pequeño delay para no sobrescribir el HTML inicial
+        setTimeout(() => {
+            fetchGameData();
+        }, 2000);
+        
+        // Actualizar título inicialmente
+        updateRoundTitle();
+        
+        // Actualizar datos cada 15 segundos (menos frecuente sin timer)
+        setInterval(fetchGameData, 15000);
+        
+        // Recargar página cada 3 minutos para obtener nuevos símbolos
+        setInterval(() => location.reload(), 180000);
+        
+        // Listener para reordenar cuando se cambie la orientación en móvil
+        window.addEventListener('orientationchange', () => {
+            setTimeout(sortInitialPlayerList, 500);
+        });
+        
+        // Listener para reordenar cuando se redimensione la ventana
+        window.addEventListener('resize', () => {
+            setTimeout(sortInitialPlayerList, 100);
+        });
+    </script>
+</body>
+

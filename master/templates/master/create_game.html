@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Juego</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e94560;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
+        }
+        
+        .form-container h2 {
+            color: #e94560;
+            margin-top: 0;
+            text-align: center;
+            font-size: 1.8em;
+            border-bottom: 1px solid #e94560;
+            padding-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #e94560;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e94560;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b7a;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #e94560, #ff6b7a);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #6b7280, #9ca3af);
+            width: auto;
+            margin: 10px 0;
+        }
+        
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .game-info {
+            background: rgba(233, 69, 96, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .info-text {
+            color: #ccc;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🎮 CREAR NUEVO JUEGO</div>
+    </div>
+    
+    <div class="form-container">
+        <h2>🎯 Juego de Deducción</h2>
+        
+        <div class="game-info">
+            <h3>📋 Configuración del Juego</h3>
+            <p>Crea un nuevo juego local de deducción para WiFi local</p>
+        </div>
+        
+        <div class="info-text">
+            <strong>🔧 Configuración actual:</strong><br>
+            • ⏱️ Duración de ronda: 5 segundos<br>
+            • 🎲 Símbolos aleatorios cada ronda<br>
+            • 🎮 Modo local (1+ jugadores para pruebas)<br>
+            • 🔄 Auto-avance cuando expire el timer
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="round_duration">⏱️ Duración de cada ronda (minutos):</label>
+                <input type="number" 
+                       id="round_duration" 
+                       name="round_duration" 
+                       value="10" 
+                       min="1" 
+                       max="60" 
+                       placeholder="Minutos por ronda..."
+                       required>
+                <div class="help-text">Entre 1 y 60 minutos por ronda</div>
+            </div>
+            
+            <div class="actions">
+                <button type="submit" class="btn">🚀 COMENZAR JUEGO AHORA</button>
+                <a href="{% url 'master:dashboard' %}" class="btn btn-secondary">🔙 CANCELAR</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

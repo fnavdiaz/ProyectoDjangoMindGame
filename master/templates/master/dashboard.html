@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e94560;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
+        }
+        
+        .card h2 {
+            color: #e94560;
+            margin-top: 0;
+            font-size: 1.5em;
+            border-bottom: 1px solid #e94560;
+            padding-bottom: 10px;
+        }
+        
+        .players-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .players-count {
+            text-align: center;
+            background: rgba(233, 69, 96, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .player-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #e94560;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .player-symbol {
+            font-size: 1.5em;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .player-karma {
+            background: #e94560;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            min-width: 12px;
+            min-height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .online-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4ade80;
+            display: inline-block;
+        }
+        
+        .offline-status {
+            background: #6b7280;
+        }
+        
+        .controls {
+            text-align: center;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #e94560, #ff6b7a);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #6b7280, #9ca3af);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+        }
+        
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #e94560;
+            text-align: center;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.8);
+        }
+        
+        .game-info {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .round-info {
+            background: rgba(233, 69, 96, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e94560;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .stat-label {
+            color: #ccc;
+            margin-top: 5px;
+        }
+        
+        .no-players {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">MASTER DASHBOARD</div>
+        <div class="user-info">
+            <div>Bienvenido, <strong>{{ user.username }}</strong></div>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-number" id="stat-players">{{ stats.online_players }}</div>
+            <div class="stat-label">Jugadores Vivos</div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="card">
+            <h2>♠ ♥ Jugadores en el Juego ♦ ♣</h2>
+            <div class="players-list" id="players-list">
+                {% if online_players %}
+                    {% for player in online_players %}
+                        <div class="player-item">
+                            <div class="player-info">
+                                <div>
+                                    <div class="player-name">{{ player.display_name }}</div>
+                                </div>
+                            </div>
+                            <div class="player-karma" style="background: {% if player.karma_score <= 3 %}#22c55e{% else %}#ef4444{% endif %}; width: 12px; height: 12px; border-radius: 50%; margin: 0; flex-shrink: 0; display: inline-block;">
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-players">
+                        No hay jugadores en el juego en este momento.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>🎮 Control del Juego</h2>
+            <div class="controls">
+                {% if current_game %}
+                    <h3 style="color: #4ade80;">Juego Activo: {{ current_game.name }}</h3>
+                    
+                    {% if current_game.status == 'active' %}
+                        <div class="round-info">
+                            <div class="game-info">🎯 Ronda {{ current_game.current_round }}</div>
+                            <div class="timer-display" id="timer">⏰ --:--</div>
+                            <div class="game-info" id="timer-label">⏱️ Duración: {{ current_game.round_duration_seconds }} segundos</div>
+                        </div>
+                        
+                        <div id="game-controls">
+                            <button onclick="pauseRound()" class="btn" id="pause-btn">⏸️ PAUSAR RONDA</button>
+                            <button onclick="advanceRound()" class="btn">⏭️ AVANZAR RONDA</button>
+                        </div>
+                        
+                        <div id="game-finished" style="display: none;">
+                            <div class="timer-display" style="color: #4ade80;">🏁 JUEGO FINALIZADO</div>
+                            <div class="game-info">Solo quedan <span id="survivors-count">0</span> superviviente(s)</div>
+                        </div>
+                        
+                        <form method="post" action="{% url 'master:finish_game' current_game.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" id="finish-game-btn">FINALIZAR JUEGO</button>
+                        </form>
+                    {% else %}
+                        <p>Estado: {{ current_game.get_status_display }}</p>
+                        <p>Jugadores: {{ current_game.players_count }}</p>
+                        
+                        {% if current_game.status == 'waiting' %}
+                            <form method="post" action="{% url 'master:start_game' current_game.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn">🚀 COMENZAR JUEGO</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <p>No hay juegos activos.</p>
+                    <a href="{% url 'master:create_game' %}" class="btn">🎮 COMENZAR NUEVO JUEGO</a>
+                {% endif %}
+                
+                <hr style="margin: 30px 0; border-color: #e94560;">
+                
+                <a href="{% url 'admin:index' %}" class="btn btn-secondary">PANEL DE ADMIN</a>
+                <a href="{% url 'master:logout' %}" class="btn btn-danger">SALIR</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let gameData = null;
+        let timerInterval = null;
+        let roundAdvancing = false; 
+        
+        function updateTimer() {
+            if (!gameData || gameData.status !== 'active') {
+                document.getElementById('timer').textContent = '⏰ --:--';
+                return;
+            }
+            
+            if (checkGameEndCondition()) {
+                return; 
+            }
+            
+            if (gameData.is_paused) {
+                const remaining = gameData.time_remaining_in_round || 0;
+                const minutes = Math.floor(remaining / 60);
+                const seconds = remaining % 60;
+                const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('timer').textContent = `⏸️ ${display}`;
+                return; 
+            }
+            
+            const now = Math.floor(Date.now() / 1000);
+            const roundStarted = Math.floor(new Date(gameData.round_started_at).getTime() / 1000);
+            const roundDuration = gameData.round_duration_seconds;
+            const pausedDuration = gameData.paused_duration || 0;
+            const elapsed = now - roundStarted - pausedDuration;
+            const remaining = Math.max(0, roundDuration - elapsed);
+            
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('timer').textContent = `⏰ ${display}`;
+            
+            if (remaining <= 0 && !roundAdvancing) {
+                roundAdvancing = true;
+                setTimeout(() => {
+                    advanceRound();
+                }, 1000);
+            }
+        }
+        
+        function checkGameEndCondition() {
+            if (!gameData || !gameData.players_stats) return false;
+            
+            const alivePlayers = gameData.players_stats.alive_players || 0;
+            
+            if (alivePlayers <= 2) {
+                document.getElementById('timer').style.display = 'none';
+                document.getElementById('timer-label').style.display = 'none';
+                document.getElementById('game-controls').style.display = 'none';
+                document.getElementById('game-finished').style.display = 'block';
+                document.getElementById('survivors-count').textContent = alivePlayers;
+                document.getElementById('finish-game-btn').textContent = '🏁 FINALIZAR JUEGO';
+                document.getElementById('finish-game-btn').style.background = 'linear-gradient(45deg, #4ade80, #22c55e)';
+                
+                console.log(`🏁 JUEGO TERMINADO: Solo quedan ${alivePlayers} superviviente(s)`);
+                return true;
+            }
+            
+            return false;
+        }
+        
+        function fetchGameData() {
+            fetch('/api/master/api/dashboard/')
+                .then(response => response.json())
+                .then(data => {
+                    const previousGameData = gameData;
+                    gameData = data.current_game;
+                    
+                    if (previousGameData && gameData && 
+                        previousGameData.current_round !== gameData.current_round) {
+                        roundAdvancing = false;
+                    }
+                    
+                    updateTimer();
+                    updatePauseButton();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function updatePauseButton() {
+            const pauseBtn = document.getElementById('pause-btn');
+            if (!pauseBtn || !gameData) return;
+            
+            if (gameData.is_paused) {
+                pauseBtn.textContent = '▶️ REANUDAR RONDA';
+                pauseBtn.style.background = 'linear-gradient(45deg, #22c55e, #16a34a)';
+            } else {
+                pauseBtn.textContent = '⏸️ PAUSAR RONDA';
+                pauseBtn.style.background = 'linear-gradient(45deg, #f59e0b, #d97706)';
+            }
+        }
+        
+        function updatePlayersList() {
+            fetch('/api/master/api/dashboard/')
+                .then(response => response.json())
+                .then(data => {
+                    const playersCount = data.stats.online_players;
+                    const players = data.online_players;
+                    
+                    const alivePlayers = players ? players.filter(p => !p.is_dead).length : 0;
+                    
+                    if (gameData) {
+                        gameData.players_stats = {
+                            total_players: playersCount,
+                            alive_players: alivePlayers,
+                            dead_players: playersCount - alivePlayers
+                        };
+                    }
+                    
+                    document.getElementById('stat-players').textContent = alivePlayers;
+                    
+                    const playersList = document.getElementById('players-list');
+                    if (players && players.length > 0) {
+                        const alivePlayers = players.filter(p => !p.is_dead);
+                        const deadPlayers = players.filter(p => p.is_dead);
+                        
+                        const sortedAlive = alivePlayers.sort((a, b) => a.display_name.localeCompare(b.display_name, 'es', { 
+                            sensitivity: 'base',
+                            ignorePunctuation: true 
+                        }));
+                        
+                        const sortedDead = deadPlayers.sort((a, b) => a.display_name.localeCompare(b.display_name, 'es', { 
+                            sensitivity: 'base',
+                            ignorePunctuation: true 
+                        }));
+                        
+                        const sortedPlayers = [...sortedAlive, ...sortedDead];
+                        
+                        playersList.innerHTML = sortedPlayers.map(player => {
+                            if (player.is_dead) {
+                                return `
+                                <div class="player-item">
+                                    <div class="player-info">
+                                        <div>
+                                            <div class="player-name" style="opacity: 0.5; text-decoration: line-through;">${player.display_name}</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 0.8em; color: #666;">ELIMINADO</div>
+                                </div>`;
+                            }
+                            
+                            return `
+                            <div class="player-item">
+                                <div class="player-info">
+                                    <div>
+                                        <div class="player-name">${player.display_name}</div>
+                                    </div>
+                                </div>
+                                <div class="player-karma" style="background: ${player.karma_score <= 3 ? '#22c55e' : '#ef4444'}; width: 12px; height: 12px; border-radius: 50%; margin: 0; flex-shrink: 0; display: inline-block;">
+                                </div>
+                            </div>`;
+                        }).join('');
+                    } else {
+                        playersList.innerHTML = '<div class="no-players">No hay jugadores en el juego en este momento.</div>';
+                    }
+                    
+                    checkGameEndCondition();
+                })
+                .catch(error => console.error('Error actualizando jugadores:', error));
+        }
+        
+        function advanceRound() {
+            if (!gameData) return;
+            
+            fetch(`/api/master/api/games/${gameData.id}/advance_round/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Ronda avanzada:', data);
+                location.reload(); 
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function pauseRound() {
+            if (!gameData) return;
+            
+            const pauseBtn = document.getElementById('pause-btn');
+            if (!pauseBtn) return;
+            
+            const isPaused = pauseBtn.textContent.includes('REANUDAR');
+            const action = isPaused ? 'resume' : 'pause';
+            
+            console.log('Estado actual:', {
+                is_paused_gameData: gameData.is_paused,
+                isPaused_fromButton: isPaused,
+                action: action,
+                buttonText: pauseBtn.textContent
+            });
+            
+            fetch(`/api/master/api/games/${gameData.id}/pause_round/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+                
+                if (gameData) {
+                    gameData.is_paused = data.is_paused;
+                }
+                
+                const pauseBtn = document.getElementById('pause-btn');
+                if (pauseBtn) {
+                    if (action === 'pause') {
+                        pauseBtn.textContent = '▶️ REANUDAR RONDA';
+                        pauseBtn.style.background = 'linear-gradient(45deg, #22c55e, #16a34a)';
+                    } else {
+                        pauseBtn.textContent = '⏸️ PAUSAR RONDA';
+                        pauseBtn.style.background = 'linear-gradient(45deg, #f59e0b, #d97706)';
+                    }
+                }
+                
+                console.log('gameData.is_paused actualizado a:', gameData.is_paused);
+                
+                fetchGameData();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        fetchGameData();
+        updatePlayersList();
+        
+        timerInterval = setInterval(() => {
+            updateTimer();
+        }, 1000);
+        
+        setInterval(fetchGameData, 5000);
+        
+        setInterval(updatePlayersList, 3000);
+    </script>
+</body>
+</html>
