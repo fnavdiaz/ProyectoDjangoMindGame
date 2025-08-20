@@ -46,7 +46,6 @@ class Game(models.Model):
         
         from players.models import Player
         Player.reset_all_for_new_game()
-        print("[GAME_START] Contadores de mentiras/verdades reseteados para nuevo juego")
             
         self.status = 'active'
         self.started_at = timezone.now()
@@ -72,9 +71,7 @@ class Game(models.Model):
         self.save()
     
     def advance_round(self):
-        """Avanza a la siguiente ronda o termina el juego si solo quedan 0-2 jugadores"""
-        print(f"[ADVANCE_ROUND] Llamado para ronda {self.current_round}")
-        
+        """Avanza a la siguiente ronda o termina el juego si solo quedan 0-2 jugadores"""        
         
         self.calculate_truths_and_lies(self.current_round)
         
@@ -90,21 +87,16 @@ class Game(models.Model):
         alive_players = Player.objects.filter(is_in_game=True, is_dead=False)
         alive_count = alive_players.count()
         
-        print(f"\n=== FINALIZANDO JUEGO ===")
-        print(f"Jugadores vivos: {alive_count}")
-        
         winner = None
         winner_reason = ""
         
         if alive_count == 0:
             
-            print("🚫 RESULTADO: Todos los jugadores han muerto. NADIE GANA.")
             winner_reason = "Todos los jugadores han muerto. Nadie gana."
             
         elif alive_count == 1:
             
             winner = alive_players.first()
-            print(f"🏆 GANADOR: {winner.display_name} (único superviviente)")
             winner_reason = f"{winner.display_name} es el ganador (único superviviente)"
             
         elif alive_count == 2:
@@ -116,10 +108,7 @@ class Game(models.Model):
             player1_interactions = player1.lies_told + player1.truths_told
             player2_interactions = player2.lies_told + player2.truths_told
             
-            print(f"🎯 DESEMPATE ENTRE DOS SUPERVIVIENTES:")
-            print(f"  {player1.display_name}: {player1_interactions} interacciones ({player1.lies_told} mentiras + {player1.truths_told} verdades)")
-            print(f"  {player2.display_name}: {player2_interactions} interacciones ({player2.lies_told} mentiras + {player2.truths_told} verdades)")
-            
+       
             if player1_interactions > player2_interactions:
                 
                 winner = player1
@@ -138,7 +127,6 @@ class Game(models.Model):
                     winner_reason = f"{winner.display_name} gana por más mentiras en empate de interacciones ({player2.lies_told} vs {player1.lies_told})"
                 else:
                     
-                    print("🤝 EMPATE: Mismas interacciones y mismas mentiras")
                     winner_reason = f"Empate entre {player1.display_name} y {player2.display_name} (mismas interacciones y mentiras)"
             
             if winner:
@@ -158,9 +146,7 @@ class Game(models.Model):
             'winner_reason': winner_reason,
             'alive_count': alive_count
         }
-        
-        print("=" * 50)
-        
+                
         self.status = 'finished'
         self.save()
     
@@ -217,22 +203,16 @@ class Game(models.Model):
         """Calcula las mentiras y verdades de la ronda que acaba de terminar"""
         from players.models import Player, PlayerGuess
         
-        print(f"\n=== ANÁLISIS RONDA {finished_round} ===")
-        
-        
         all_guesses = PlayerGuess.objects.all()
-        print(f"DEBUG: Total de comunicaciones en base de datos: {all_guesses.count()}")
         for guess in all_guesses:
             print(f"  - Ronda {guess.round_number}: {guess.teller.display_name} -> {guess.player.display_name} ({guess.told_symbol})")
         
         
         round_guesses = PlayerGuess.objects.filter(round_number=finished_round)
         
-        print(f"Total de comunicaciones en la ronda {finished_round}: {round_guesses.count()}")
         
         
         players = Player.objects.filter(is_in_game=True)
-        print(f"\n💀 VERIFICACIÓN DE MUERTES POR SÍMBOLO INCORRECTO:")
         for player in players:
             if not player.is_dead:  # Solo verificar jugadores vivos
                 death_occurred = player.check_symbol_death()
@@ -246,10 +226,6 @@ class Game(models.Model):
         
         
         if round_guesses.count() == 0:
-            print("No hay comunicaciones para analizar en esta ronda.")
-            print("=" * 40)
-            print(" NOTA: Los contadores se resetearán automáticamente al iniciar un nuevo juego")
-            print("=" * 40)
             return
         
         
@@ -266,32 +242,25 @@ class Game(models.Model):
             
             actual_symbol = guess.player.suit_symbol
             told_symbol = guess.told_symbol
-            
-            print(f"  Analizando: {guess.teller.display_name} le dijo a {guess.player.display_name}")
-            print(f"    Símbolo real de {guess.player.display_name}: {actual_symbol}")
-            print(f"    Lo que le dijo {guess.teller.display_name}: {told_symbol}")
+
             
             if actual_symbol == told_symbol:
                 
                 guess.teller.truths_told += 1  # Contador global del juego
                 round_truths[guess.teller.id] += 1  # Contador de esta ronda
-                print(f"    ✓ VERDAD - {guess.teller.display_name} ahora tiene {guess.teller.truths_told} verdades")
             else:
                 
                 guess.teller.lies_told += 1  # Contador global del juego
                 round_lies[guess.teller.id] += 1  # Contador de esta ronda
-                print(f"    ✗ MENTIRA - {guess.teller.display_name} ahora tiene {guess.teller.lies_told} mentiras")
             
             guess.teller.save()
         
         
         players = Player.objects.filter(is_in_game=True)
-        print(f"\nRESUMEN RONDA {finished_round}:")
         for player in players:
             print(f"  {player.display_name} -> mentiras: {player.lies_told}, verdades: {player.truths_told}")
         
         
-        print(f"\n📊 AJUSTE DE KARMA RONDA {finished_round}:")
         for player in players:
             old_karma = player.karma_score
             
@@ -323,9 +292,6 @@ class Game(models.Model):
             else:
                 print(f"  {player.display_name}: Karma {player.karma_score} {change}")
         
-        print("=" * 40)
-        print("💡 NOTA: Los contadores se resetearán automáticamente al iniciar un nuevo juego")
-        print("=" * 40)
     
 
     
