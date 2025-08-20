@@ -46,21 +46,12 @@ ProyectoMindGame/
 git clone [URL-del-repositorio]
 ```
 
-### 2. Entrar al directorio
-```bash
-cd AIBLGame
-```
-
-### 3. Levantar con Docker
+### 2. Levantar con Docker
 ```bash
 docker-compose up --build
 ```
 
-### 4. Conectarse al juego
+### 3. Conectarse al juego
 - **Desde tu PC**: http://localhost:8000
 - **Desde móvil (mismo WiFi)**: http://[tu-ip]:8000
 
-### 5. Parar el juego
-```bash
-docker-compose down
-```
